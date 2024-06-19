@@ -71,11 +71,9 @@ class SafetyNode(Node):
         self.min_ttc = 1000000
 
     def laserscan_callback(self, msg):
-
+       # self.logger().info('i hear laser')
         # 遍历laserscan数据，查找最近的障碍物距离  
-        for range in msg.ranges:
-            if range < self.min_distance:
-                self.min_distance = range
+        
         for i in range(len(msg.ranges)):
             self.distance = msg.ranges[i];
             if (self.distance < msg.range_min or self.distance > msg.range_max):
@@ -84,7 +82,7 @@ class SafetyNode(Node):
             self.derivative_distance = self.vehicle_speed * math.cos(self.angle)
             if (self.derivative_distance > 0 and (self.distance / self.derivative_distance) < self.min_ttc):
                 self.min_ttc = self.distance / math.max(self.derivative_distance, 0.00001)
-        self.get_logger().info('get min_ttc:%u',self.min_ttc)
+        self.get_logger().info('get min_ttc:%f'% self.min_ttc)
         # cmd=AckermannDriveStamped()
         # cmd.drive.speed=0.5
         # cmd.drive.steering_angle = 0.0  # 保持直线  
