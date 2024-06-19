@@ -113,9 +113,9 @@ class Keyboard(Node):
             self.open_aeb=not self.open_aeb
             self.kb_pub.publish(self.open_aeb)
             if self.open_aeb:
-                self.get_logger.info('you open the AEB')
+                self.get_logger().info('you open the AEB')
             else:
-                self.get_logger.info('you close the AEB')
+                self.get_logger().info('you close the AEB')
 
 
 

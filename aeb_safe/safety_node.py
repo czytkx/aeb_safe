@@ -60,7 +60,7 @@ class SafetyNode(Node):
             10)
 
         # AEB相关参数  
-        self.braking_threshold_ttc = 0.3  # TTC阈值，单位秒  
+        self.braking_threshold_ttc = 1  # TTC阈值，单位秒
         self.vehicle_speed = 0.0  # 初始速度，从odometry中更新  
         self.min_distance = float('inf')  # 最小障碍物距离  
         self.brake_distance = 0.1
@@ -84,6 +84,7 @@ class SafetyNode(Node):
             self.derivative_distance = self.vehicle_speed * math.cos(self.angle)
             if (self.derivative_distance > 0 and (self.distance / self.derivative_distance) < self.min_ttc):
                 self.min_ttc = self.distance / math.max(self.derivative_distance, 0.00001)
+        self.get_logger().info('get min_ttc:%u',self.min_ttc)
         # cmd=AckermannDriveStamped()
         # cmd.drive.speed=0.5
         # cmd.drive.steering_angle = 0.0  # 保持直线  
