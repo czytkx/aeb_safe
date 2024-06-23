@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros2-safenode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros2-safenode
+  template:
+    metadata:
+      labels:
+        app: ros2-safenode
+    spec:
+      containers:
+      - image: aeb-safe:v2
+        command: ["/bin/bash", "-c"]
+        args: ["source /opt/ros/humble/setup.sh && source /root/ros_wc/install/setup.sh && ros2 run aeb_safe safety_node"]
+        imagePullPolicy: IfNotPresent
+        tty: true
+        name: ros2-safenode
+      #nodeSelector:
+      #  nodetype: ubuntu
+      tolerations:
+      - key: node-role.kubernetes.io/agent
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/edge
+        operator: Exists
+        effect: NoSchedule
+      restartPolicy: Always

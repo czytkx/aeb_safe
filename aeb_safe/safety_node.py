@@ -70,7 +70,7 @@ class SafetyNode(Node):
         self.crash_ttc=0.01
         self.derivative_distance = 0.0
         self.min_ttc = 1000000
-
+        print('safety node opened')
     def laserscan_callback(self, msg):
        # self.logger().info('i hear laser')
         # 遍历laserscan数据，查找最近的障碍物距离  
@@ -78,11 +78,11 @@ class SafetyNode(Node):
         for i in range(len(msg.ranges)):
             self.distance = msg.ranges[i]
             
-            if (self.distance < msg.range_min or self.distance > msg.range_max):
+            if self.distance < msg.range_min or self.distance > msg.range_max:
                 continue
             self.angle = msg.angle_min + msg.angle_increment * i
             self.derivative_distance = self.vehicle_speed * math.cos(self.angle)
-            if (self.derivative_distance > 0 and (self.distance / self.derivative_distance) < self.min_ttc):
+            if self.derivative_distance > 0 and (self.distance / self.derivative_distance) < self.min_ttc:
                 self.min_ttc = self.distance / max(self.derivative_distance, 0.00001)       
             self.min_distance=min(self.min_distance,self.derivative_distance)
         self.get_logger().info('get min_ttc:%f'% self.min_ttc)
@@ -104,7 +104,7 @@ class SafetyNode(Node):
     def odometry_callback(self, msg):
         # 从odometry消息中更新车辆速度  
         self.vehicle_speed = msg.twist.twist.linear.x
-        if(self.vehicle_speed>=0):
+        if self.vehicle_speed>=0:
             self.crash_ttc=0.01
         else:
             self.crash_ttc=0.025
